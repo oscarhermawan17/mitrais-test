@@ -1,6 +1,6 @@
 import React from 'react';
 import Footer from './Footer'
-// import axios from 'axios'
+import axios from 'axios'
 import './App.css'
 
 class App extends React.Component {
@@ -19,7 +19,8 @@ class App extends React.Component {
       },
       select_dates:[],
       select_months:["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"], // set default Month
-      select_years:[] //Set default year in "ComponentDidMount"
+      select_years:[], //Set default year in "ComponentDidMount"
+      active_non_active_form:"container blur",
     }
   }
 
@@ -44,32 +45,35 @@ class App extends React.Component {
   // Setting total day in Month by click month and year
   onChangeValue(value, entity){
     let obj = {...this.state.data_registration, [entity]:value}
-    if(entity === "month_birth" && value === "Feb")
-      this.setDates(28)
-    else if(entity === "year_birth" && value%4 !== 0 && this.state.data_registration.month_birth === "Feb")
-      this.setDates(28)
-    else if(entity === "month_birth" && value === "Feb" && this.state.data_registration.year_birth%4 === 0 )
-      this.setDates(29)
-    else if(entity === "year_birth" && value%4 === 0 && this.state.data_registration.month_birth === "Feb" )
-      this.setDates(29) 
-    else if(entity === "month_birth" && value === "Jan" || value === "Mar" || value === "May" || value === "July" || value==="Aug" || value==="Oct" || value==="Dec")
-      this.setDates(31) 
-    else if(entity === "month_birth" && value === "Apr" || value === "June" || value === "Sep" || value === "Nov" )
-      this.setDates(30) 
+    let totalDayinMonth = [31,28,31,30,31,30,31,31,30,31,30,31]
 
+    if(entity === "month_birth"){
+      this.setDates(totalDayinMonth[this.state.select_months.indexOf(value)])
+    } else if(entity === "year_birth" && value%4 === 0 && this.state.data_registration.month_birth === "Feb" )
+      this.setDates(29) 
     this.setState({data_registration:obj}, () => console.log(this.state.data_registration)) 
   }
 
   submitData(){
-
+    let obj = this.state.data_registration
+    axios.post(`http://127.0.0.1:3001/api/users/registration`, obj)
+    .then(data =>{
+      if(data.data.status === "failed"){
+        alert('gagal')
+      } else if(data.data.status === "success"){
+        alert('berhasil')
+      }
+    })
+    .catch(data =>{
+      alert("gagal")
+    })
   }
 
   render(){
     return(
       <div>
-        <div className="container">
+        <div className={this.state.active_non_active_form}>
           <div className="form_validation">
-            <form>
               Registration
               <input type="text" name="mobile_number" required placeholder=" Mobile Number" value={this.state.data_registration.mobile_number} onChange={(e) => this.onChangeValue(e.target.value, "mobile_number")}/>
               <input type="text" name="first_name" placeholder=" First name" value={this.state.data_registration.first_name} onChange={(e) => this.onChangeValue(e.target.value, "first_name")}/>
@@ -104,8 +108,7 @@ class App extends React.Component {
               </div>
               
               <input type="text" name="last_name" placeholder=" Email" value={this.state.data_registration.email} onChange={(e) => this.onChangeValue(e.target.value, "email")}/>
-              <button type="submit" name="register" onCLick={() => this.submitData()}>Register</button>
-            </form>
+              <button type="submit" name="register" onClick={() => this.submitData()}>Register</button>
           </div> 
         </div>
 

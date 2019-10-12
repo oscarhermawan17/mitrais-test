@@ -30,6 +30,11 @@ button[type="submit"]{
   border-radius: 8px;
 }
 
+.blur {
+  pointer-events: none;
+  opacity: 0.3;
+}
+
 .form_validation{
   padding: 40px 50px;
 }

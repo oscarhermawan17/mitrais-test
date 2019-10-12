@@ -10,6 +10,7 @@ module.exports = {
       },
       mobile_number: {
         allowNull: false,
+        unique: true,
         type: Sequelize.STRING
       },
       first_name: {
@@ -22,6 +23,9 @@ module.exports = {
       },
       dob: {
         type: Sequelize.DATEONLY
+      },
+      gender: {
+        type: Sequelize.STRING
       },
       email: {
         allowNull: false,
