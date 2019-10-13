@@ -13,7 +13,7 @@
 * clone this app
 * run npm install in frontend and backend folder)
 * install sequelize-cli (global is better) https://www.npmjs.com/package/sequelize-cli
-* create database
+* create database and config with .env, configuration in config folder "config.js"
 * run sequelize db:migrate (migration databse)
 * run npm start in front end and backend
 * backend will launch on port 3001 and frontend in port 30000
