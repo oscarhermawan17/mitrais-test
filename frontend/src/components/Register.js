@@ -1,9 +1,9 @@
 import React from 'react';
-import Footer from './Footer'
+import Footer from '../stateless/Footer'
 import axios from 'axios'
-import './App.css'
+import '../Style.css'
 
-class App extends React.Component {
+class Register extends React.Component {
   constructor(){
     super()
     this.state = {
@@ -144,7 +144,7 @@ class App extends React.Component {
         <div className="login_container">
           <div className="form_button_login">
             <div className="make_relative">
-              <button type="submit" style={this.state.hidden_button} >Login</button> 
+              <button type="submit" style={this.state.hidden_button} onClick={() => this.props.history.push('/login')}>Login</button> 
              </div> 
           </div> 
         </div>          
@@ -155,4 +155,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default Register

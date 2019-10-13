@@ -1,9 +1,7 @@
 import React from 'react';
-import './App.css'
+import '../Style.css'
 
-class Login extends React.Component {
-  render(){
-    return(
+const Login = ()  =>
       <div>
         <div className="container">
           <div className="form_validation">
@@ -14,9 +12,5 @@ class Login extends React.Component {
           </div> 
         </div>
       </div>
-      
-    )
-  }
-}
 
 export default Login;

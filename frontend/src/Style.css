@@ -74,3 +74,9 @@ button[type="submit"]{
   margin: 0 auto;
   margin-top: 20px;
 }
+
+.lost_page{
+  margin-top: 50px;
+  text-align: center;
+  font-size: 50px;
+}
