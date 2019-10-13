@@ -2,7 +2,7 @@ var db = require('../models');
 const methods = {};
 
 methods.registrationUser = (req,res)=>{
-    console.log(req.body)
+    console.log('masuk controller', req.body)
     db.User.create({
         mobile_number:req.body.mobile_number,
         first_name:req.body.first_name,
