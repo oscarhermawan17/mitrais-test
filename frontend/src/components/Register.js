@@ -94,7 +94,7 @@ class Register extends React.Component {
       }
     })
     .catch(data =>{
-      alert(`catch ${data.data.message_response}`)
+      alert(`Check your internet connection`)
     })
   }
 

@@ -9,16 +9,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       mobile_number: {
-        allowNull: false,
         unique: true,
         type: Sequelize.STRING
       },
       first_name: {
-        allowNull: false,
         type: Sequelize.STRING
       },
       last_name: {
-        allowNull: false,
         type: Sequelize.STRING
       },
       dob: {
@@ -28,7 +25,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       email: {
-        allowNull: false,
+        unique: true,
         type: Sequelize.STRING
       },
       createdAt: {

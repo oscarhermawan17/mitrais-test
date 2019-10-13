@@ -2,7 +2,6 @@ var db = require('../models');
 const methods = {};
 
 methods.registrationUser = (req,res)=>{
-    console.log('masuk controller', req.body)
     db.User.create({
         mobile_number:req.body.mobile_number,
         first_name:req.body.first_name,
@@ -15,7 +14,16 @@ methods.registrationUser = (req,res)=>{
         res.send({status:"success", data:user, message_response:"registration success"})
     })
     .catch(err=> {
-        res.send({status:"failed", err})
+        if(err.hasOwnProperty('fields')){
+            let tmp = Object.getOwnPropertyNames(err.fields)
+            if(tmp[0] === "mobile_number"){
+                res.send({status:"failed", message_response:"Phone number already exist", path:"mobile_phone", type:"exist"})
+            } else if(tmp[0] === "email")
+                res.send({status:"failed", message_response:"Email already exist", path:"email", type:"exist"})
+            else 
+                res.send({status:"failed", message_response:"Error input data"})
+        }
+        res.send({status:"failed", message_response:"Error input data"})
     })
 }
 
