@@ -1,6 +1,7 @@
 import React from 'react';
 import Footer from '../stateless/Footer'
 import axios from 'axios'
+import Warning from '../stateless/Warning'
 import '../Style.css'
 
 class Register extends React.Component {
@@ -27,6 +28,25 @@ class Register extends React.Component {
         position: "absolute",
         top: "40px",
         zIndex: "10",
+      },
+      warning:{
+        mobile_number:{
+          message:"",
+          display_css:"warning_required hidden_warning"
+        },
+        first_name:{
+          message:"",
+          display_css:"warning_required hidden_warning"
+        },
+        last_name:{
+          message:"",
+          display_css:"warning_required hidden_warning"
+        },
+        email:{
+          message:"",
+          display_css:"warning_required hidden_warning"
+        },
+
       }
     }
   }
@@ -53,12 +73,27 @@ class Register extends React.Component {
   onChangeValue(value, entity){
     let obj = {...this.state.data_registration, [entity]:value}
     let totalDayinMonth = [31,28,31,30,31,30,31,31,30,31,30,31]
+    if(entity === "mobile_number" || entity === "first_name" ||  entity === "last_name"  || entity === "email"){
+      let obj_warning = {
+        message:"",
+        display_css:"warning_required hidden_warning"
+      }
+      this.setState({warning:{...this.state.warning, [entity]: obj_warning}})
+    }
 
     if(entity === "month_birth"){
       this.setDates(totalDayinMonth[this.state.select_months.indexOf(value)])
     } else if(entity === "year_birth" && value%4 === 0 && this.state.data_registration.month_birth === "Feb" )
       this.setDates(29) 
-    this.setState({data_registration:obj}, () => console.log(this.state.data_registration)) 
+    this.setState({data_registration:obj}) 
+  }
+
+  setWarning(message, path){
+    let obj_warning = {
+      message:message,
+      display_css:"warning_required"
+    }
+    this.setState({warning:{...this.state.warning, [path]: obj_warning}}, console.log(this.state.warning, obj_warning))
   }
 
   submitData(){
@@ -81,16 +116,15 @@ class Register extends React.Component {
       ...this.state.data_registration,
       dob:dob,
     }
-    console.log("FORM == ", obj)
     axios.post(`http://127.0.0.1:3001/api/users/registration`, obj)
     .then(data =>{
       if(data.data.status === "failed"){
-        alert(`${data.data.message_response}`)
+        this.setWarning(data.data.message_response, data.data.path)
       } else if(data.data.status === "success"){
-        alert('berhasil')
-        this.setState({active_non_active_form:"container blur"})
-        this.setState({css_footer:"footer blur"})
-        this.setState({hidden_button: {...this.state.hidden_button, display: "inline"}})
+          alert('Success Registation')
+          this.setState({active_non_active_form:"container blur"})
+          this.setState({css_footer:"footer blur"})
+          this.setState({hidden_button: {...this.state.hidden_button, display: "inline"}})
       }
     })
     .catch(data =>{
@@ -103,12 +137,15 @@ class Register extends React.Component {
       <div>
         <div className={this.state.active_non_active_form}>
           <div className="form_validation">
-              <span>Registration</span>
+              <span className="title_span">Registration</span>
+              <Warning warning_props={this.state.warning.mobile_number}/>
               <input type="text" name="mobile_number" required placeholder="Mobile Number" value={this.state.data_registration.mobile_number} onChange={(e) => this.onChangeValue(e.target.value, "mobile_number")}/>
-              <input type="text" name="first_name" placeholder="First name" value={this.state.data_registration.first_name} onChange={(e) => this.onChangeValue(e.target.value, "first_name")}/>
+              <Warning warning_props={this.state.warning.first_name}/>
+              <input type="text" name="first_name" placeholder="First name" value={this.state.data_registration.first_name} onChange={(e) => this.onChangeValue(e.target.value, "first_name")}/>         
+              <Warning warning_props={this.state.warning.last_name}/>
               <input type="text" name="last_name" placeholder="Last name" value={this.state.data_registration.last_name} onChange={(e) => this.onChangeValue(e.target.value, "last_name")}/>
-              Date of Birth
               <div className="custom_select">
+                <p>Date of Birth</p>
                 <select onChange={(e) => this.onChangeValue(e.target.value, "month_birth")}>
                   <option value="0">Month</option>
                     {this.state.select_months.map((month,index) => 
@@ -131,11 +168,11 @@ class Register extends React.Component {
                 </select>
               </div>
 
-              <div>
-                  <input type="radio"  checked={this.state.data_registration.gender === "Male"} onChange={() => this.onChangeValue("Male", "gender")}/>Male
-                  <input type="radio" checked={this.state.data_registration.gender === "Female"} onChange={() => this.onChangeValue("Female", "gender")}/>Female
+              <div className="radio_button_gender">
+                  <input className="radiobutton" type="radio"  checked={this.state.data_registration.gender === "Male"} onChange={() => this.onChangeValue("Male", "gender")}/><span>&nbsp;Male</span> &nbsp; &nbsp; &nbsp;
+                  <input className="radiobutton" type="radio" checked={this.state.data_registration.gender === "Female"} onChange={() => this.onChangeValue("Female", "gender")}/><span>&nbsp;Female</span>
               </div>
-              
+              <Warning warning_props={this.state.warning.email}/>
               <input type="text" name="last_name" placeholder="Email" value={this.state.data_registration.email} onChange={(e) => this.onChangeValue(e.target.value, "email")}/>
               <button type="submit" name="register" onClick={() => this.submitData()}>Register</button>
               

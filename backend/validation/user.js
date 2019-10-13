@@ -3,7 +3,7 @@ var moment = require('moment');
 
 methods.user = (req,res, next) => {
     let regex_email = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
-    let regex_mobile_number = /^(^\+62\s?|^0\s?|^62)(\d{3,4}-?){2}\d{3,4}$/g
+    let regex_mobile_number = /^(^62\s?|^0)(\d{3,4}-?){2}\d{3,4}$/g
 
     const must_be_required = value => (value === "" || null) ? false : true 
     const check_gender = gender => (gender === null || gender ==="Male" || gender ==="Female") ? true : false
@@ -19,9 +19,9 @@ methods.user = (req,res, next) => {
     const check_phone = phone => (regex_mobile_number.test(req.body.mobile_number) === true) ? true : false
 
     if(must_be_required(req.body.mobile_number) === false)
-        res.send({status:"failed", message_response:"Please enter mobile phone", path:"mobile_phone", type:"required"})
+        res.send({status:"failed", message_response:"Please enter mobile phone", path:"mobile_number", type:"required"})
     else if(check_phone(req.body.mobile_number) === false)
-        res.send({status:"failed", message_response:"Please enter valid Indonesian phone number", path:"mobile_phone", type:"invalid"})  
+        res.send({status:"failed", message_response:"Please enter valid Indonesian phone number", path:"mobile_number", type:"invalid"})  
     else if(must_be_required(req.body.first_name) === false)
         res.send({status:"failed", message_response:"Please enter First name", path:"first_name", type:"required"})
     else if(must_be_required(req.body.last_name) === false)

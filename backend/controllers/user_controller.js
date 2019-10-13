@@ -17,7 +17,7 @@ methods.registrationUser = (req,res)=>{
         if(err.hasOwnProperty('fields')){
             let tmp = Object.getOwnPropertyNames(err.fields)
             if(tmp[0] === "mobile_number"){
-                res.send({status:"failed", message_response:"Phone number already exist", path:"mobile_phone", type:"exist"})
+                res.send({status:"failed", message_response:"Phone number already exist", path:"mobile_number", type:"exist"})
             } else if(tmp[0] === "email")
                 res.send({status:"failed", message_response:"Email already exist", path:"email", type:"exist"})
             else 

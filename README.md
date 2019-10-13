@@ -1,7 +1,7 @@
 # Test Mitrais
 
 # Requirement For this Web
-* Mysql:5.7.21 (MACOS)
+* mysql:5.7.21 (using MACOS)
 * nodejs: 10.15.2
 * npm:6.4.1
 * react: 16.10.2
