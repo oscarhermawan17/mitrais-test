@@ -34,22 +34,26 @@ input[type="password"]{
   padding-left:10px;
 }
 
-select{
-  border: none;
-  outline: none;
-  background: transparent;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  border-radius: 0;
-  margin: 0;
-  display: block;
-  width: 100%;
-  padding: 12px 55px 15px 15px;
-  font-size: 14px;
-  color: #714BB9;
+.container_select{
+  float: left;
+  margin-right: 10px;
 }
 
+.select_custom{
+  border: 1px solid black;
+  padding: 4px 20px;
+  border-radius: 4px;
+  margin-bottom:8px;
+}
+
+.select_custom_pilih{
+  border: 1px solid black;
+  padding: 4px 20px;
+}
+
+.select_custom_pilih:hover{
+  background-color: gray;
+}
 
 .custom_select{
   margin-top: 25px;
@@ -127,4 +131,20 @@ button[type="submit"]{
   margin-top: 50px;
   text-align: center;
   font-size: 50px;
+}
+
+i {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.clear_float{
+  clear: left;
 }

@@ -9,12 +9,13 @@
     "react-router-dom": "^5.1.2"
   },
   "devDependencies": {
+    "jest": "^24.9.0",
     "react-scripts": "3.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest --config ./jest.config.json",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

@@ -46,8 +46,10 @@ class Register extends React.Component {
           message:"",
           display_css:"warning_required hidden_warning"
         },
-
-      }
+      },
+      select_hidden_month:"hidden_warning",
+      select_hidden_date:"hidden_warning",
+      select_hidden_year:"hidden_warning",
     }
   }
 
@@ -59,6 +61,14 @@ class Register extends React.Component {
       total_year.push(i)
     }
     this.setState({select_years:total_year})
+  }
+
+  dropDownSelect(value){
+    if(value === "month" && this.state.select_hidden_month === "")
+      this.setState({select_hidden_month:"hidden_warning"})
+    else
+      this.setState({select_hidden_month:""})
+
   }
 
   setDates(total_days){
@@ -146,6 +156,48 @@ class Register extends React.Component {
               <input type="text" name="last_name" placeholder="Last name" value={this.state.data_registration.last_name} onChange={(e) => this.onChangeValue(e.target.value, "last_name")}/>
               <div className="custom_select">
                 <p>Date of Birth</p>
+                
+                {/* TRY SELECT, WITH YOUR OWN STYLE
+                <div>
+                  <div className="container_select">
+                    <div className="select_custom" onClick={() => this.dropDownSelect("month")}>Month &nbsp;<i className="down"></i></div>
+                    <div className={this.state.select_hidden_month}>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                    </div>
+                  </div>
+
+                  <div className="container_select">
+                    <div className="select_custom" onClick={() => this.dropDownSelect("date")}>Date &nbsp;<i className="down"></i></div>
+                    <div className={this.state.select_hidden_date}>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                    </div>
+                  </div>
+
+                  <div className="container_select">
+                    <div className="select_custom" onClick={() => this.dropDownSelect("year")}>Year &nbsp;<i className="down"></i></div>
+                    <div className={this.state.select_hidden_year}>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                      <div className="select_custom_pilih">Month &nbsp;</div>
+                    </div>
+                  </div>
+                  <div className="clear_float"></div>
+                </div> */}
+                
+                
                 <select onChange={(e) => this.onChangeValue(e.target.value, "month_birth")}>
                   <option value="0">Month</option>
                     {this.state.select_months.map((month,index) => 
