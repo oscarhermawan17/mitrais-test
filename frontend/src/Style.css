@@ -37,6 +37,7 @@ input[type="password"]{
 .container_select{
   float: left;
   margin-right: 10px;
+  position: relative;
 }
 
 .select_custom{
@@ -44,11 +45,14 @@ input[type="password"]{
   padding: 4px 20px;
   border-radius: 4px;
   margin-bottom:8px;
+  background-color: white;
+  
 }
 
 .select_custom_pilih{
   border: 1px solid black;
   padding: 4px 20px;
+  position: relative;
 }
 
 .select_custom_pilih:hover{
