@@ -3,6 +3,9 @@ import Footer from '../stateless/Footer'
 import axios from 'axios'
 import Warning from '../stateless/Warning'
 import '../Style.css'
+import { configure } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16';
+configure({ adapter: new Adapter() });
 
 class Register extends React.Component {
   constructor(){
@@ -73,20 +76,16 @@ class Register extends React.Component {
       return true
   }
 
-  check_phone(phone){
+  regex_check(value, entity){
+    let regex_name = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g
     let regex_mobile_number = /^(^\+62\s?|^0\s?|^62)(\d{3,4}-?){2}\d{3,4}$/g
-    if(regex_mobile_number.test(phone) === true)
-      return true
-    else 
-      return false
-  }
-
-  check_email(email){
     let regex_email = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
-    if(regex_email.test(email) ===  true)
-      return true
-    else 
-      return false
+    if(entity === "mobile_number")
+      return regex_mobile_number.test(value)
+    else if(entity === "first_name" || entity === "last_name")
+      return regex_name.test(value)
+    else if(entity === "email")
+      return regex_email.test(value) 
   }
 
   dropDownSelect(value){
@@ -119,7 +118,11 @@ class Register extends React.Component {
     for(let i = 1; i <= total_days; i++){
       total_date.push(i);
     }
-    this.setState({select_dates:total_date})
+    if(total_date.length >= 28 && total_date.length<=31){
+      return total_date;
+    } else
+      return "Date"
+      
   }
 
   // Setting total day in Month by click month and year
@@ -139,11 +142,11 @@ class Register extends React.Component {
     let totalDayinMonth = [31,28,31,30,31,30,31,31,30,31,30,31]
     this.setState({data_registration: {...this.state.data_registration, [entity]:value}}, () => {
       if(entity === "year_birth" && value%4 === 0 && this.state.data_registration.month_birth === "Feb" )
-        this.setDates(29)
+        this.setState({select_dates:this.setDates(29)})
       else if(entity === "month_birth" && value === "Feb" && this.state.data_registration.year_birth%4 === 0)
-        this.setDates(29)
+        this.setState({select_dates:this.setDates(29)})
       else if(entity === "month_birth")
-        this.setDates(totalDayinMonth[this.state.select_months.indexOf(value)])  
+        this.setState({select_dates:this.setDates(totalDayinMonth[this.state.select_months.indexOf(value)])})
     })
     this.setState({select_hidden_month:"hidden_warning"})
     this.setState({select_hidden_date:"hidden_warning"})
@@ -162,19 +165,25 @@ class Register extends React.Component {
     if(this.must_be_required(this.state.data_registration.mobile_number) === false){
       this.setWarning("Please enter mobile phone", "mobile_number")    
       return false
-    } else if(this.check_phone(this.state.data_registration.mobile_number) === false){
+    } else if(this.regex_check(this.state.data_registration.mobile_number, "mobile_number") === false){
       this.setWarning("Please enter valid Indonesian phone number", "mobile_number")    
       return false
     } else if(this.must_be_required(this.state.data_registration.first_name) === false){
       this.setWarning("Please enter First name", "first_name")    
       return false
+    } else if(this.regex_check(this.state.data_registration.first_name, "first_name") === false){
+      this.setWarning("Enter Name correctly, A-Z (space, -, ', dot in middle of your name)", "first_name")    
+      return false
     } else if(this.must_be_required(this.state.data_registration.last_name) === false){
       this.setWarning("Please enter Last name", "last_name")    
+      return false
+    } else if(this.regex_check(this.state.data_registration.last_name, "last_name") === false){
+      this.setWarning("Enter Name correctly, A-Z (space, -, ', dot in middle of your name)", "last_name")    
       return false
     } else if(this.must_be_required(this.state.data_registration.email) === false){
       this.setWarning("Please enter Email", "email")    
       return false
-    } else if(this.check_email(this.state.data_registration.email) === false){
+    } else if(this.regex_check(this.state.data_registration.email, "email") === false){
       this.setWarning("Please enter valid format Email", "email")    
       return false
     } else 
@@ -232,7 +241,7 @@ class Register extends React.Component {
                     <div className={this.state.select_hidden_month}>
                         <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom("Month", "month_birth")}>Month &nbsp;</div>
                         {this.state.select_months.length === 0 ? null : this.state.select_months.map(month =>
-                          <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom(month, "month_birth")}>{month} &nbsp;</div>
+                          <div className="select_custom_pilih" key={month} onClick={() => this.onChangeValueCustom(month, "month_birth")}>{month} &nbsp;</div>
                         )}
                     </div>
                   </div>
@@ -242,7 +251,7 @@ class Register extends React.Component {
                     <div className={this.state.select_hidden_date}> 
                         <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom("Date", "date_birth")}>Date &nbsp;</div>
                         {this.state.select_dates.length === 0 ? null : this.state.select_dates.map(date =>
-                          <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom(date, "date_birth")}>{date} &nbsp;</div>
+                          <div className="select_custom_pilih" key={date} onClick={() => this.onChangeValueCustom(date, "date_birth")}>{date} &nbsp;</div>
                         )}
                     </div>
                   </div>
@@ -252,7 +261,7 @@ class Register extends React.Component {
                     <div className={this.state.select_hidden_year}>
                         <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom("Year", "year_birth")}>Year &nbsp;</div>
                         {this.state.select_years.length === 0 ? null : this.state.select_years.map(year =>
-                          <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom(year, "year_birth")}>{year} &nbsp;</div>
+                          <div className="select_custom_pilih" key={year} onClick={() => this.onChangeValueCustom(year, "year_birth")}>{year} &nbsp;</div>
                         )}
                     </div>
                   </div>

@@ -9,13 +9,15 @@
     "react-router-dom": "^5.1.2"
   },
   "devDependencies": {
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
     "jest": "^24.9.0",
     "react-scripts": "3.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest --config ./jest.config.json",
+    "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

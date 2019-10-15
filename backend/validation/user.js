@@ -23,6 +23,15 @@ methods.user = (req,res, next) => {
     }
     const check_email = email => (regex_email.test(req.body.email) === true) ? true : false
     const check_phone = phone => (regex_mobile_number.test(req.body.mobile_number) === true) ? true : false
+    const check_name = (value) => {
+        let regex_name = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g
+        if(regex_name.test(value) === true){
+            // console.log('hasil regex', regex_name.test(value))
+            return true
+        }
+        else return false
+    }
+ 
 
     if(must_be_required(req.body.mobile_number) === false)
         res.send({status:"failed", message_response:"Please enter mobile phone", path:"mobile_number", type:"required"})
@@ -30,8 +39,12 @@ methods.user = (req,res, next) => {
         res.send({status:"failed", message_response:"Please enter valid Indonesian phone number", path:"mobile_number", type:"invalid"})  
     else if(must_be_required(req.body.first_name) === false)
         res.send({status:"failed", message_response:"Please enter First name", path:"first_name", type:"required"})
+    else if(check_name(req.body.first_name) === false)
+        res.send({status:"failed", message_response:"Enter Name correctly, A-Z (space, -, ', dot in middle of your name)", path:"first_name", type:"invalid"})    
     else if(must_be_required(req.body.last_name) === false)
         res.send({status:"failed", message_response:"Please enter Last name", path:"last_name", type:"required"})
+    else if(check_name(req.body.last_name) === false)
+        res.send({status:"failed", message_response:"Enter Name correctly, A-Z (space, -, ', dot in middle of your name)", path:"last_name", type:"invalid"})      
     else if(check_gender(req.body.gender) === false)
         res.send({status:"failed", message_response:"Please enter valid format gender", path:"gender", type:"invalid"})
     else if(check_dob(req.body.dob) === false)
