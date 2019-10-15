@@ -70,7 +70,7 @@ class Register extends React.Component {
   }
 
   must_be_required(value) {
-    if(value === "" || value === null) 
+    if(value === "" || value === null || value === undefined) 
       return false 
     else 
       return true

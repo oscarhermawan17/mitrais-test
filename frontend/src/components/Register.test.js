@@ -7,31 +7,46 @@ describe('First React component test with Enzyme', () => {
         shallow(<Register/>);
     });
 
-    it('Test mobile number', () => {
+    it('Test mobile number Regex', () => {
         const wrapper = shallow(<Register/>);
-        expect(wrapper.instance().check_phone("807")).toBe(false)
-        expect(wrapper.instance().check_phone(null)).toBe(false)
-        expect(wrapper.instance().check_phone(undefined)).toBe(false)
-        expect(wrapper.instance().check_phone("085701000807")).toBe(true)
-        expect(wrapper.instance().check_phone("6285701000807")).toBe(true)
-        expect(wrapper.instance().check_phone("+6285701000807")).toBe(true)
-        expect(wrapper.instance().check_phone("185701000807")).toBe(false)
+        expect(wrapper.instance().regex_check("807", "mobile_number")).toBe(false)
+        expect(wrapper.instance().regex_check("085701000807", "mobile_number")).toBe(true)
+        expect(wrapper.instance().regex_check("6285701000807", "mobile_number")).toBe(true)
+        expect(wrapper.instance().regex_check("+6285701000807", "mobile_number")).toBe(true)
+        expect(wrapper.instance().regex_check("185701000807", "mobile_number")).toBe(false)
     });
-     
+
+    it('Test First Name, Last Name Mabile number must be required', () => {
+        const wrapper = shallow(<Register/>);
+        expect(wrapper.instance().must_be_required("")).toBe(false)
+        expect(wrapper.instance().must_be_required(null)).toBe(false)
+        expect(wrapper.instance().must_be_required(undefined)).toBe(false)
+    });
+
+    it('Test First Name and Last Name using Regex', () => {
+        const wrapper = shallow(<Register/>);
+        expect(wrapper.instance().regex_check("Oscar.", "first_name")).toBe(false)
+        expect(wrapper.instance().regex_check("Oscar-", "first_name")).toBe(false)
+        expect(wrapper.instance().regex_check(".kalo", "first_name")).toBe(false)
+        expect(wrapper.instance().regex_check("Oscar-Hermawan", "first_name")).toBe(true)
+        expect(wrapper.instance().regex_check("Oscar Hermawan", "first_name")).toBe(true)
+        expect(wrapper.instance().regex_check("Oscar'Hermawan", "first_name")).toBe(true)
+        expect(wrapper.instance().regex_check("Oscar.Hermawan", "first_name")).toBe(true)
+    });
 
     it('Email', () => {
         const wrapper = shallow(<Register/>);
-        expect(wrapper.instance().check_email(806)).toBe(false)
-        expect(wrapper.instance().check_email(null)).toBe(false)
-        expect(wrapper.instance().check_email(undefined)).toBe(false)
-        expect(wrapper.instance().check_email("testing")).toBe(false)
-        expect(wrapper.instance().check_email("abc.do")).toBe(false)
-        expect(wrapper.instance().check_email("abc@")).toBe(false)
-        expect(wrapper.instance().check_email("abc@c")).toBe(false)
-        expect(wrapper.instance().check_email("co@co.")).toBe(false)
-        expect(wrapper.instance().check_email("abc@.a.c")).toBe(false)
-        expect(wrapper.instance().check_email("abc@a.c")).toBe(true)
-        expect(wrapper.instance().check_email("c@a.c")).toBe(true)
-        expect(wrapper.instance().check_email("sanggulan@ako.com")).toBe(true)
+        expect(wrapper.instance().regex_check(806, "email")).toBe(false)
+        expect(wrapper.instance().regex_check(null, "email")).toBe(false)
+        expect(wrapper.instance().regex_check(undefined, "email")).toBe(false)
+        expect(wrapper.instance().regex_check("testing", "email")).toBe(false)
+        expect(wrapper.instance().regex_check("abc.do", "email")).toBe(false)
+        expect(wrapper.instance().regex_check("abc@", "email")).toBe(false)
+        expect(wrapper.instance().regex_check("abc@c", "email")).toBe(false)
+        expect(wrapper.instance().regex_check("co@co.", "email")).toBe(false)
+        expect(wrapper.instance().regex_check("abc@.a.c", "email")).toBe(false)
+        expect(wrapper.instance().regex_check("abc@a.c", "email")).toBe(true)
+        expect(wrapper.instance().regex_check("c@a.c", "email")).toBe(true)
+        expect(wrapper.instance().regex_check("sanggulan@ako.com", "email")).toBe(true)
     });
  });
