@@ -49,4 +49,37 @@ describe('First React component test with Enzyme', () => {
         expect(wrapper.instance().regex_check("c@a.c", "email")).toBe(true)
         expect(wrapper.instance().regex_check("sanggulan@ako.com", "email")).toBe(true)
     });
- });
+
+    it('Set Dates', () => {
+        const wrapper = shallow(<Register/>);
+        expect(wrapper.instance().setDates(28)).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28])
+        expect(wrapper.instance().setDates(1)).toStrictEqual("Date")
+        expect(wrapper.instance().setDates(0)).toStrictEqual("Date")
+        expect(wrapper.instance().setDates(30)).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30])
+        expect(wrapper.instance().setDates(31)).toStrictEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31])
+        expect(wrapper.instance().setDates(32)).toStrictEqual("Date")
+        expect(wrapper.instance().setDates(undefined)).toStrictEqual("Date")
+        expect(wrapper.instance().setDates(null)).toStrictEqual("Date")
+        expect(wrapper.instance().setDates(32)).toStrictEqual("Date")
+        expect(wrapper.instance().setDates(-1)).toStrictEqual("Date") 
+    });
+
+    // it('DOB on click', () => {
+    //     const wrapper = mount(<Register />);
+    //     const cancelBtn = wrapper.find('.select_custom');
+    //     cancelBtn.simulate('click');
+    // })
+
+    // it('valid component', () => {
+    //     const wrapper = shallow(<Register />);
+    //     wrapper.setProps({ active: true });
+    //     let checkbox = wrapper.find({ type: 'checkbox' });
+    //     expect(checkbox.props().checked).to.equal(true);
+    //     expect(wrapper.find('.backgroundColor')).to.equal('green');
+    //     wrapper.setProps({ active: false });
+    //     checkbox = wrapper.find({ type: 'checkbox' });
+    //     expect(checkbox.props().checked).to.equal(false);
+    //     expect(wrapper.find('.backgroundColor')).to.equal('red');
+    //   });
+    
+});

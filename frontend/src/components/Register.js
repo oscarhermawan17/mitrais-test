@@ -121,8 +121,7 @@ class Register extends React.Component {
     if(total_date.length >= 28 && total_date.length<=31){
       return total_date;
     } else
-      return "Date"
-      
+      return "Date"   
   }
 
   // Setting total day in Month by click month and year
