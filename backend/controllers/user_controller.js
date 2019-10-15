@@ -2,8 +2,16 @@ var db = require('../models');
 const methods = {};
 
 methods.registrationUser = (req,res)=>{
+    let tmp_mobile_number =""
+    if(req.body.mobile_number.slice(0,2) === "62")
+        tmp_mobile_number = `+62${req.body.mobile_number.slice(2, req.body.mobile_number.length)}`
+    else if(req.body.mobile_number[0] === "0")
+        tmp_mobile_number = `+62${req.body.mobile_number.slice(1, req.body.mobile_number.length)}`
+    else
+        tmp_mobile_number = req.body.mobile_number
+    
     db.User.create({
-        mobile_number:req.body.mobile_number,
+        mobile_number:tmp_mobile_number,
         first_name:req.body.first_name,
         last_name:req.body.last_name,
         dob:req.body.dob,

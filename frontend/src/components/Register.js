@@ -12,12 +12,15 @@ class Register extends React.Component {
         mobile_number:"",
         first_name:"",
         last_name:"",
-        date_birth:"0",
-        month_birth:"0",
-        year_birth:"0",
+        date_birth:"Date",
+        month_birth:"Month",
+        year_birth:"Year",
         gender:null,
         email:""
       },
+      date_birth:"Date",
+      month_birth:"Month",
+      year_birth:"Year",
       select_dates:[],
       select_months:["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"], // set default Month
       select_years:[], //Set default year in "ComponentDidMount"
@@ -63,6 +66,29 @@ class Register extends React.Component {
     this.setState({select_years:total_year})
   }
 
+  must_be_required(value) {
+    if(value === "" || value === null) 
+      return false 
+    else 
+      return true
+  }
+
+  check_phone(phone){
+    let regex_mobile_number = /^(^\+62\s?|^0\s?|^62)(\d{3,4}-?){2}\d{3,4}$/g
+    if(regex_mobile_number.test(phone) === true)
+      return true
+    else 
+      return false
+  }
+
+  check_email(email){
+    let regex_email = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+    if(regex_email.test(email) ===  true)
+      return true
+    else 
+      return false
+  }
+
   dropDownSelect(value){
     if(value === "month" && this.state.select_hidden_month === "hidden_warning"){
       this.setState({select_hidden_month:""})
@@ -99,7 +125,6 @@ class Register extends React.Component {
   // Setting total day in Month by click month and year
   onChangeValue(value, entity){
     let obj = {...this.state.data_registration, [entity]:value}
-    let totalDayinMonth = [31,28,31,30,31,30,31,31,30,31,30,31]
     if(entity === "mobile_number" || entity === "first_name" ||  entity === "last_name"  || entity === "email"){
       let obj_warning = {
         message:"",
@@ -107,12 +132,22 @@ class Register extends React.Component {
       }
       this.setState({warning:{...this.state.warning, [entity]: obj_warning}})
     }
-
-    if(entity === "month_birth"){
-      this.setDates(totalDayinMonth[this.state.select_months.indexOf(value)])
-    } else if(entity === "year_birth" && value%4 === 0 && this.state.data_registration.month_birth === "Feb" )
-      this.setDates(29) 
     this.setState({data_registration:obj}) 
+  }
+
+  onChangeValueCustom(value, entity){
+    let totalDayinMonth = [31,28,31,30,31,30,31,31,30,31,30,31]
+    this.setState({data_registration: {...this.state.data_registration, [entity]:value}}, () => {
+      if(entity === "year_birth" && value%4 === 0 && this.state.data_registration.month_birth === "Feb" )
+        this.setDates(29)
+      else if(entity === "month_birth" && value === "Feb" && this.state.data_registration.year_birth%4 === 0)
+        this.setDates(29)
+      else if(entity === "month_birth")
+        this.setDates(totalDayinMonth[this.state.select_months.indexOf(value)])  
+    })
+    this.setState({select_hidden_month:"hidden_warning"})
+    this.setState({select_hidden_date:"hidden_warning"})
+    this.setState({select_hidden_year:"hidden_warning"})
   }
 
   setWarning(message, path){
@@ -120,43 +155,60 @@ class Register extends React.Component {
       message:message,
       display_css:"warning_required"
     }
-    this.setState({warning:{...this.state.warning, [path]: obj_warning}}, console.log(this.state.warning, obj_warning))
+    this.setState({warning:{...this.state.warning, [path]: obj_warning}})
   }
 
-  submitData(){
+  setValidationFrontEnd(){
+    if(this.must_be_required(this.state.data_registration.mobile_number) === false){
+      this.setWarning("Please enter mobile phone", "mobile_number")    
+      return false
+    } else if(this.check_phone(this.state.data_registration.mobile_number) === false){
+      this.setWarning("Please enter valid Indonesian phone number", "mobile_number")    
+      return false
+    } else if(this.must_be_required(this.state.data_registration.first_name) === false){
+      this.setWarning("Please enter First name", "first_name")    
+      return false
+    } else if(this.must_be_required(this.state.data_registration.last_name) === false){
+      this.setWarning("Please enter Last name", "last_name")    
+      return false
+    } else if(this.must_be_required(this.state.data_registration.email) === false){
+      this.setWarning("Please enter Email", "email")    
+      return false
+    } else if(this.check_email(this.state.data_registration.email) === false){
+      this.setWarning("Please enter valid format Email", "email")    
+      return false
+    } else 
+      return true
+  }
+  setDob(){
     let dob = null
-    let year = this.state.data_registration.year_birth;
-    let month, date = "0"
-    if(this.state.data_registration.year_birth !== "0" && this.state.data_registration.month_birth !== "0" && this.state.data_registration.date_birth !== "0"){
-      if(10>parseInt(this.state.select_months.indexOf(this.state.data_registration.month_birth)+1))
-        month = `0${this.state.select_months.indexOf(this.state.data_registration.month_birth)+1}`
-      else
-        month = `${this.state.select_months.indexOf(this.state.data_registration.month_birth)+1}`
-      if(10>parseInt(this.state.data_registration.date_birth))
-        date = `0${this.state.data_registration.date_birth}`
-      else
-        date = `${this.state.data_registration.date_birth}`
-      dob = `${year}-${month}-${date}`
+    if(Number.isInteger(parseInt(this.state.data_registration.month)) === true && Number.isInteger(parseInt(this.state.data_registration.date)) === true && Number.isInteger(parseInt(this.state.data_registration.year)) === true)
+      return { ...this.state.data_registration, dob:`this.state.data_registration.year-this.state.data_registration.month-this.state.data_registration.date`}
+    else 
+      return { ...this.state.data_registration, dob:dob}
+  }
+  
+
+  submitData(){
+    let validation = this.setValidationFrontEnd()
+    let obj = this.setDob()
+  
+    if(validation === true){
+      axios.post(`http://127.0.0.1:3001/api/users/registration`, obj)
+      .then(data =>{
+        if(data.data.status === "failed"){
+          this.setWarning(data.data.message_response, data.data.path)
+        } else if(data.data.status === "success"){
+            alert('Success Registration')
+            this.setState({active_non_active_form:"container blur"})
+            this.setState({css_footer:"footer blur"})
+            this.setState({hidden_button: {...this.state.hidden_button, display: "inline"}})
+        }
+      })
+      .catch(data =>{
+        alert(`Check your internet connection`)
+      })
     }
-      
-    let obj = {
-      ...this.state.data_registration,
-      dob:dob,
-    }
-    axios.post(`http://127.0.0.1:3001/api/users/registration`, obj)
-    .then(data =>{
-      if(data.data.status === "failed"){
-        this.setWarning(data.data.message_response, data.data.path)
-      } else if(data.data.status === "success"){
-          alert('Success Registation')
-          this.setState({active_non_active_form:"container blur"})
-          this.setState({css_footer:"footer blur"})
-          this.setState({hidden_button: {...this.state.hidden_button, display: "inline"}})
-      }
-    })
-    .catch(data =>{
-      alert(`Check your internet connection`)
-    })
   }
 
   render(){
@@ -174,58 +226,38 @@ class Register extends React.Component {
               <div className="custom_select">
                 <p>Date of Birth</p>
                 
-
                 <div>
                   <div className="container_select">
-                    <div className="select_custom" onClick={() => this.dropDownSelect("month")}>Month &nbsp;<i className="down"></i></div>
+                  <div className="select_custom" onClick={() => this.dropDownSelect("month")}>{this.state.data_registration.month_birth} &nbsp;<i className="down"></i></div>
                     <div className={this.state.select_hidden_month}>
-                      {this.state.select_months.length === 0 ? null : this.state.select_months.map(months =>
-                        <div className="select_custom_pilih">{months} &nbsp;</div>
-                      )}
+                        <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom("Month", "month_birth")}>Month &nbsp;</div>
+                        {this.state.select_months.length === 0 ? null : this.state.select_months.map(month =>
+                          <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom(month, "month_birth")}>{month} &nbsp;</div>
+                        )}
                     </div>
                   </div>
 
                   <div className="container_select">
-                    <div className="select_custom" onClick={() => this.dropDownSelect("date")}>Date &nbsp;<i className="down"></i></div>
-                    <div className={this.state.select_hidden_date}>
-                      {this.state.select_dates.length === 0 ? null : this.state.select_dates.map(date =>
-                        <div className="select_custom_pilih">{date} &nbsp;</div>
-                      )}
+                    <div className="select_custom" onClick={() => this.dropDownSelect("date")}>{this.state.data_registration.date_birth} &nbsp;<i className="down"></i></div>
+                    <div className={this.state.select_hidden_date}> 
+                        <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom("Date", "date_birth")}>Date &nbsp;</div>
+                        {this.state.select_dates.length === 0 ? null : this.state.select_dates.map(date =>
+                          <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom(date, "date_birth")}>{date} &nbsp;</div>
+                        )}
                     </div>
                   </div>
 
                   <div className="container_select">
-                    <div className="select_custom" onClick={() => this.dropDownSelect("year")}>Year &nbsp;<i className="down"></i></div>
+                    <div className="select_custom" onClick={() => this.dropDownSelect("year")}>{this.state.data_registration.year_birth} &nbsp;<i className="down"></i></div>
                     <div className={this.state.select_hidden_year}>
-                    {this.state.select_years.length === 0 ? null : this.state.select_years.map(year =>
-                        <div className="select_custom_pilih">{year} &nbsp;</div>
-                      )}
+                        <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom("Year", "year_birth")}>Year &nbsp;</div>
+                        {this.state.select_years.length === 0 ? null : this.state.select_years.map(year =>
+                          <div className="select_custom_pilih" onClick={() => this.onChangeValueCustom(year, "year_birth")}>{year} &nbsp;</div>
+                        )}
                     </div>
                   </div>
                   <div className="clear_float"></div>
                 </div>
-                
-                
-                <select onChange={(e) => this.onChangeValue(e.target.value, "month_birth")}>
-                  <option value="0">Month</option>
-                    {this.state.select_months.map((month,index) => 
-                    <option value={month} key={index}>{month}</option>
-                  )}
-                </select>
-
-                <select onChange={(e) => this.onChangeValue(e.target.value, "date_birth")}>
-                  <option value="0">Date</option>
-                  {this.state.select_dates.map((date,index) => 
-                    <option value={date} key={index}>{date}</option>
-                  )}
-                </select>
-
-                <select onChange={(e) => this.onChangeValue(e.target.value, "year_birth")}>
-                  <option value="0">Year</option>
-                  {this.state.select_years.map((year,index) => 
-                    <option value={year} key={index}>{year}</option>
-                  )}
-                </select>
               </div>
 
               <div className="radio_button_gender">
